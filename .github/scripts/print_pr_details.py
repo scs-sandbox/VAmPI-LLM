@@ -33,3 +33,9 @@ for file in pr.get_files():
     print(f"Deletions: {file.deletions}")
     print(f"Changes: {file.changes}")
     print("=" * 40)
+
+    # Fetch and print the actual diff (this is the raw diff of changes)
+    diff = pr.get_diff(file.filename)  # Get diff for the specific file
+    print("\nDiff:")
+    print(diff)  # This prints the diff in the format seen in GitHub UI
+    print("=" * 40)
