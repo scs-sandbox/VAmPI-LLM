@@ -41,7 +41,7 @@ for file in pr.get_files():
     # Print the diff for this file (patch content)
     if file.patch:
         print("\nDiff:")
-        print(f"{file.patch=}")  # This is the actual diff, similar to GitHub UI
+        print(file.patch)
     else:
         print("\nNo diff available for this file.")
 
