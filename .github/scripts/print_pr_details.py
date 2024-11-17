@@ -47,9 +47,9 @@ for file in pr.get_files():
 
     print("=" * 40)
 
-    comment = pr.create_comment(
+    comment = pr.create_review_comment(
         body=f"This file is: {file.filename}\n",
         commit=last_commit,
         path=file.filename,
-        position=2
+        subject_type="File",
     )
