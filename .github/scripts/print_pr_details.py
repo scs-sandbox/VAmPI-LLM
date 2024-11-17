@@ -25,7 +25,7 @@ print(f"PR Number: {pr.number}")
 print(f"URL: {pr.html_url}")
 print(f"Commits in PR: {pr.commits}")
 print(f"Latest Commit SHA: {pr.head.sha}")
-print(f"{pr.get_commits()[-1]=}")
+print(f"{pr.get_commits()[pr.commits - 1]=}")
 
 last_commit = pr.get_commits()[-1]
 
