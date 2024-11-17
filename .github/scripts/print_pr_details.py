@@ -51,5 +51,5 @@ for file in pr.get_files():
         body=f"This file is: {file.filename}\n",
         commit=last_commit,
         path=file.filename,
-        subject_type="File",
+        subject_type="file",
     )
