@@ -49,7 +49,7 @@ for file in pr.get_files():
 
     comment = pr.create_comment(
         body=f"This file is: {file.filename}\n",
-        commit_id=last_commit,
+        commit=last_commit,
         path=file.filename,
         position=0
     )
