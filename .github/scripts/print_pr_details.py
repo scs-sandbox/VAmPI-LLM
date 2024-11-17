@@ -34,8 +34,11 @@ for file in pr.get_files():
     print(f"Changes: {file.changes}")
     print("=" * 40)
 
-    # Fetch and print the actual diff (this is the raw diff of changes)
-    diff = pr.get_diff(file.filename)  # Get diff for the specific file
-    print("\nDiff:")
-    print(diff)  # This prints the diff in the format seen in GitHub UI
+    # Print the diff for this file (patch content)
+    if file.patch:
+        print("\nDiff:")
+        print(file.patch)  # This is the actual diff, similar to GitHub UI
+    else:
+        print("\nNo diff available for this file.")
+
     print("=" * 40)
