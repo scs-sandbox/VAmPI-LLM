@@ -27,7 +27,7 @@ print(f"Commits in PR: {pr.commits}")
 print(f"Latest Commit SHA: {pr.head.sha}")
 print(f"{pr.get_commits()[pr.commits - 1]=}")
 
-last_commit = pr.get_commits()[-1]
+last_commit = pr.get_commits()[pr.commits - 1]
 
 # Print list of files changed in the PR
 print("\nFiles Changed in this PR:")
