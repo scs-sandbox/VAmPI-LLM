@@ -1,0 +1,44 @@
+name: Review Co-Pilot
+
+on:
+  pull_request:
+    types: [reopened, opened, synchronize]
+
+jobs:
+  review-copilot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install GitHub API library
+        run: |
+          python -m pip install --upgrade pip
+          pip install PyGithub
+            
+      - name: Install pipx
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pipx
+  
+      - name: Install Review Copilot
+        run: |
+          pipx install "git+https://${{ secrets.REVIEW_COPILOT_KEY }}@github.com/scs-sandbox/review-copilot.git"
+  
+      - name: Run Review Copilot
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.REVIEW_COPILOT_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.REVIEW_COPILOT_SECRET_ACCESS_KEY }}
+          
+        run: |
+          REPO_NAME="${{ github.repository }}"
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          
+          review-copilot review $REPO_NAME $PR_NUMBER
