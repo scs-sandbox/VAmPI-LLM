@@ -35,4 +35,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          review-copilot review
+          REPO_NAME="${{ github.repository }}"
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          
+          review-copilot review $REPO_NAME $PR_NUMBER
