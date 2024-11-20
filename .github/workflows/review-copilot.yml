@@ -34,6 +34,10 @@ jobs:
       - name: Run Review Copilot
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ACCESS_KEY: ${{ secrets.REVIEW_COPILOT_ACCESS_KEY }}
+          SECRET_ACCESS_KEY: ${{ secrets.REVIEW_COPILOT_SECRET_ACCESS_KEY }}
+          STAGE: "prod"
+          
         run: |
           REPO_NAME="${{ github.repository }}"
           PR_NUMBER="${{ github.event.pull_request.number }}"
