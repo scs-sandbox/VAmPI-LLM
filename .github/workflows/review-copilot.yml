@@ -29,7 +29,7 @@ jobs:
   
       - name: Install Review Copilot
         run: |
-          pipx install "git+https://${{ secrets.REVIEW_COPILOT_KEY }}@github.com/scs-sandbox/review-copilot.git"
+          pipx install "git+x-access-token:${{ secrets.REVIEW_COPILOT_KEY }}@github.com/scs-sandbox/review-copilot.git"
   
       - name: Run Review Copilot
         env:
