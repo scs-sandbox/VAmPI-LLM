@@ -12,14 +12,14 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
 
-      - name: Install GitHub CLI
-        run: |
-          sudo apt update
-          sudo apt install -y gh
-
       - name: Respond to Comment
         env:
           COMMENT_ID: ${{ github.event.comment.id }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
         run: |
-          gh api repos/${{ github.repository }}/pulls/comments/$COMMENT_ID/replies -f body='Thanks for your reply!'
+          curl -X POST \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/$REPO/pulls/comments/$COMMENT_ID/replies \
+            -d '{"body": "Thanks for your reply!"}'
