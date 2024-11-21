@@ -25,9 +25,9 @@ jobs:
             https://api.github.com/repos/$REPO/pulls/comments/$COMMENT_ID)
 
           # Extract the necessary details using Bash string manipulation
-          COMMIT_ID=$(echo "$COMMENT_DATA" | grep -oP '"commit_id": "\K[^"]+')
-          PATH=$(echo "$COMMENT_DATA" | grep -oP '"path": "\K[^"]+')
-          POSITION=$(echo "$COMMENT_DATA" | grep -oP '"position": \K[0-9]+')
+          COMMIT_ID=$(echo "$COMMENT_DATA" | awk -F'"' '/"commit_id":/ {print $4}')
+          PATH=$(echo "$COMMENT_DATA" | awk -F'"' '/"path":/ {print $4}')
+          POSITION=$(echo "$COMMENT_DATA" | awk -F': ' '/"position":/ {print $2}' | sed 's/,//')
 
           # Post a new comment in the same context as the original comment
           curl -X POST \
