@@ -1,5 +1,6 @@
 import jsonschema
 
+from api_views.test_func import mock_bad_implementation
 from api_views.users import token_validator
 from config import db
 from api_views.json_schemas import *
@@ -14,6 +15,7 @@ def error_message_helper(msg):
 
 
 def get_all_books():
+    mock_bad_implementation("test", 1, "test")
     return_value = jsonify({'Books': Book.get_all_books()})
     return return_value
 
