@@ -39,4 +39,5 @@ jobs:
           review-copilot reply \
             --repo $GITHUB_REPOSITORY \
             --comment-id ${{ github.event.comment.id }} \
+            --pull-number ${{ github.event.pull_request.number }} \
             --token $GITHUB_TOKEN
