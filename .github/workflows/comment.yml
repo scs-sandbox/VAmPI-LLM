@@ -12,14 +12,19 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
 
-      - name: Respond to Review Comment
+      - name: Respond to Comment
         env:
           COMMENT_ID: ${{ github.event.comment.id }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
           REPO: ${{ github.repository }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           curl -X POST \
             -H "Authorization: token $GITHUB_TOKEN" \
             -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/$REPO/pulls/comments/$COMMENT_ID \
-            -d '{"body": "Thanks for your reply!"}'
+            https://api.github.com/repos/$REPO/pulls/$PULL_REQUEST_NUMBER/comments \
+            -d @- << EOF
+          {
+            "body": "Thanks for your reply!",
+            "in_reply_to_id": $COMMENT_ID
+          }
