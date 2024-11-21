@@ -11,7 +11,7 @@ from app import vuln
 
 
 def get_all_books():
-    mock_bad_implementation("test", 1, "test")
+    mock_bad_implementation("test", 1, "test1")
     return_value = jsonify({'Books': Book.get_all_books()})
     return return_value
 
