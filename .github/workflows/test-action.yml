@@ -1,0 +1,29 @@
+name: Print PR Details
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  print-pr-details:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install GitHub API library
+        run: |
+          python -m pip install --upgrade pip
+          pip install PyGithub
+
+      - name: Run Python script to print PR details
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python .github/scripts/print_pr_details.py
