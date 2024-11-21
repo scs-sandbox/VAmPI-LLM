@@ -29,6 +29,11 @@ jobs:
       - name: Run Replay to Comments
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.REVIEW_COPILOT_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.REVIEW_COPILOT_SECRET_ACCESS_KEY }}
+          BEDROCK_KNOWLEDGE_BASE_ID: ${{ secrets.REVIEW_COPILOT_BEDROCK_KNOWLEDGE_BASE_ID }}
+          BEDROCK_DATASOURCE_ID: ${{ secrets.REVIEW_COPILOT_BEDROCK_DATASOURCE_ID }}
+          LANGCHAIN_API_KEY: ${{ secrets.REVIEW_COPILOT_LANGSMITH_API_KEY }}
         run: |
           review-copilot reply \
             --repo $GITHUB_REPOSITORY \
