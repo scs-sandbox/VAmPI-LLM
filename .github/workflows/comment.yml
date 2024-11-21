@@ -12,6 +12,11 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
 
+      - name: Install jq
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+
       - name: Respond to Comment
         env:
           COMMENT_ID: ${{ github.event.comment.id }}
@@ -19,7 +24,7 @@ jobs:
           REPO: ${{ github.repository }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # First, fetch details about the original comment to get necessary context
+          # Fetch details about the original comment to get necessary context
           COMMENT_DATA=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/$REPO/pulls/comments/$COMMENT_ID)
