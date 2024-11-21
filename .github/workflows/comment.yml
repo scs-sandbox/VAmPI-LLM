@@ -12,38 +12,26 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
 
-      - name: Install jq and Respond to Comment
+      - name: Respond to Comment
         env:
           COMMENT_ID: ${{ github.event.comment.id }}
-          PULL_NUMBER: ${{ github.event.pull_request.number }}
+          PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
           REPO: ${{ github.repository }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Install jq
-          sudo apt-get update && sudo apt-get install -y jq
-
-          # Verify jq Installation
-          jq --version
-
-          # Fetch details about the original comment to get necessary context
+          # Fetch details about the original comment
           COMMENT_DATA=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/$REPO/pulls/comments/$COMMENT_ID)
 
-          # Extract necessary details from the original comment data
-          COMMIT_ID=$(echo $COMMENT_DATA | jq -r '.commit_id')
-          PATH=$(echo $COMMENT_DATA | jq -r '.path')
-          POSITION=$(echo $COMMENT_DATA | jq -r '.position')
+          # Extract the necessary details using Bash string manipulation
+          COMMIT_ID=$(echo "$COMMENT_DATA" | grep -oP '"commit_id": "\K[^"]+')
+          PATH=$(echo "$COMMENT_DATA" | grep -oP '"path": "\K[^"]+')
+          POSITION=$(echo "$COMMENT_DATA" | grep -oP '"position": \K[0-9]+')
 
           # Post a new comment in the same context as the original comment
           curl -X POST \
             -H "Authorization: token $GITHUB_TOKEN" \
             -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/$REPO/pulls/$PULL_NUMBER/comments \
-            -d @- << EOF
-          {
-            "body": "Thanks for your reply!",
-            "commit_id": "$COMMIT_ID",
-            "path": "$PATH",
-            "position": $POSITION
-          }
+            https://api.github.com/repos/$REPO/pulls/$PULL_REQUEST_NUMBER/comments \
+            -d "{\"body\": \"Thanks for your reply!\", \"commit_id\": \"$COMMIT_ID\", \"path\": \"$PATH\", \"position\": $POSITION}"
