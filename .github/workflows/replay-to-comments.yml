@@ -1,11 +1,11 @@
-name: Replay to Review Comments
+name: Reply to Review Comments
 
 on:
   pull_request_review_comment:
     types: [created]
 
 jobs:
-  replay-to-comments:
+  reply-to-comments:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,7 +26,7 @@ jobs:
         run: |
           pipx install "git+https://${{ secrets.REVIEW_COPILOT_KEY }}@github.com/scs-sandbox/review-copilot.git"
 
-      - name: Run Replay to Comments
+      - name: Run Reply to Comment
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AWS_ACCESS_KEY_ID: ${{ secrets.REVIEW_COPILOT_ACCESS_KEY }}
@@ -37,5 +37,5 @@ jobs:
         run: |
           review-copilot reply \
             --repo $GITHUB_REPOSITORY \
-            --pull-number ${{ github.event.pull_request.number }} \
+            --comment-id ${{ github.event.comment.id }} \
             --token $GITHUB_TOKEN
