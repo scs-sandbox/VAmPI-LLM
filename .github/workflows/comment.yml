@@ -1,24 +1,34 @@
-on: issue_comment
+name: Respond to Comments
+
+on:
+  issue_comment:
+    types: [created]
 
 jobs:
-  pr_commented:
-    # This job only runs for pull request comments
-    name: PR comment
-    if: ${{ github.event.issue.pull_request }}
+  handle-comment:
     runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo A comment on PR $NUMBER
-        env:
-          NUMBER: ${{ github.event.issue.number }}
 
-  issue_commented:
-    # This job only runs for issue comments
-    name: Issue comment
-    if: ${{ !github.event.issue.pull_request }}
-    runs-on: ubuntu-latest
     steps:
-      - run: |
-          echo A comment on issue $NUMBER
+      - name: Set up GitHub CLI
+        uses: actions/setup-gh-cli@v1
+
+      - name: Respond to PR Comment
+        if: ${{ github.event.issue.pull_request }}
         env:
-          NUMBER: ${{ github.event.issue.number }}
+          COMMENT_ID: ${{ github.event.comment.id }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Reply to the comment on the pull request
+          gh api repos/${{ github.repository }}/issues/$PR_NUMBER/comments \
+            -f body='Thank you for your comment! We will review it shortly.'
+  
+      - name: Respond to Issue Comment
+        if: ${{ !github.event.issue.pull_request }}
+        env:
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Reply to the comment on the issue
+          gh api repos/${{ github.repository }}/issues/$ISSUE_NUMBER/comments \
+            -f body='Thank you for your feedback!'
