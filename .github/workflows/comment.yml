@@ -24,10 +24,10 @@ jobs:
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/$REPO/pulls/comments/$COMMENT_ID)
 
-          # Extract the necessary details using Bash string manipulation
-          COMMIT_ID=$(echo "$COMMENT_DATA" | awk -F'"' '/"commit_id":/ {print $4}')
-          PATH=$(echo "$COMMENT_DATA" | awk -F'"' '/"path":/ {print $4}')
-          POSITION=$(echo "$COMMENT_DATA" | awk -F': ' '/"position":/ {print $2}' | sed 's/,//')
+          # Extract necessary details using pure bash
+          COMMIT_ID=$(echo "$COMMENT_DATA" | python3 -c "import sys, json; print(json.load(sys.stdin)['commit_id'])")
+          PATH=$(echo "$COMMENT_DATA" | python3 -c "import sys, json; print(json.load(sys.stdin)['path'])")
+          POSITION=$(echo "$COMMENT_DATA" | python3 -c "import sys, json; print(json.load(sys.stdin)['position'])")
 
           # Post a new comment in the same context as the original comment
           curl -X POST \
