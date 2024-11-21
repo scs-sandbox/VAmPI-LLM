@@ -10,10 +10,6 @@ from models.books_model import Book
 from app import vuln
 
 
-def error_message_helper(msg):
-    return '{ "status": "fail", "message": "' + msg + '"}'
-
-
 def get_all_books():
     mock_bad_implementation("test", 1, "test")
     return_value = jsonify({'Books': Book.get_all_books()})
