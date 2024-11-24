@@ -42,6 +42,11 @@ jobs:
         run: |
           pipx install "git+https://${{ secrets.REVIEW_COPILOT_KEY }}@github.com/scs-sandbox/review-copilot.git"
 
+      - name: Ensure Pipx Paths
+        run: |
+          pipx ensurepath
+        shell: bash
+
       - name: Run Reply to Comment
         env:
           PYTHONUNBUFFERED: 1
