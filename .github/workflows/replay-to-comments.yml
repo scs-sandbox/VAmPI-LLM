@@ -15,14 +15,30 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.x'
+          python-version: "3.x"
 
       - name: Install pipx
         run: |
           python -m pip install --upgrade pip
           python -m pip install pipx
 
+      - id: variable-setup
+        run: |
+          echo "pipx-home=$PIPX_HOME" >> $GITHUB_OUTPUT
+          echo "pipx-bin-dir=$PIPX_BIN_DIR" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Cache pipx
+        id: cache-pipx
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ steps.variable-setup.outputs.pipx-home }}
+            ${{ steps.variable-setup.outputs.pipx-bin-dir }}
+          key: ${{ runner.os }}-pipx-review-copilot
+
       - name: Install Review Copilot
+        if: ${{ steps.cache-pipx.outputs.cache-hit != 'true' }}
         run: |
           pipx install "git+https://${{ secrets.REVIEW_COPILOT_KEY }}@github.com/scs-sandbox/review-copilot.git"
 
