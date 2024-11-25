@@ -1,0 +1,66 @@
+name: Reply to Review Comments
+
+on:
+  pull_request_review_comment:
+    types: [created]
+
+jobs:
+  reply-to-comments:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+
+      - name: Install pipx
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pipx
+
+      - id: variable-setup
+        run: |
+          echo "pipx-home=$PIPX_HOME" >> $GITHUB_OUTPUT
+          echo "pipx-bin-dir=$PIPX_BIN_DIR" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Cache pipx
+        id: cache-pipx
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ steps.variable-setup.outputs.pipx-home }}
+            ${{ steps.variable-setup.outputs.pipx-bin-dir }}
+          key: ${{ runner.os }}-pipx-review-copilot
+
+      - name: Install Review Copilot
+        if: ${{ steps.cache-pipx.outputs.cache-hit != 'true' }}
+        run: |
+          pipx install "git+https://${{ secrets.REVIEW_COPILOT_KEY }}@github.com/scs-sandbox/review-copilot.git"
+
+      - name: Ensure Pipx Paths
+        run: |
+          pipx ensurepath
+        shell: bash
+
+      - name: Run Reply to Comment
+        env:
+          PYTHONUNBUFFERED: 1
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.REVIEW_COPILOT_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.REVIEW_COPILOT_SECRET_ACCESS_KEY }}
+          BEDROCK_KNOWLEDGE_BASE_ID: ${{ secrets.REVIEW_COPILOT_BEDROCK_KNOWLEDGE_BASE_ID }}
+          BEDROCK_DATASOURCE_ID: ${{ secrets.REVIEW_COPILOT_BEDROCK_DATASOURCE_ID }}
+          LANGCHAIN_API_KEY: ${{ secrets.REVIEW_COPILOT_LANGSMITH_API_KEY }}
+        run: |
+          review-copilot reply \
+            --repo $GITHUB_REPOSITORY \
+            --comment-id ${{ github.event.comment.id }} \
+            --pull-number ${{ github.event.pull_request.number }} \
+            --token $GITHUB_TOKEN \
+            --follow-up-comment "${{ github.event.comment.body }}" \
+            --in-reply-to-id ${{ github.event.comment.in_reply_to_id }}
