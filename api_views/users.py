@@ -12,6 +12,11 @@ from app import vuln
 def error_message_helper(msg):
     return '{ "status": "fail", "message": "' + msg + '"}'
 
+def error_message_helper1(msg):
+    return '{ "status": "fail", "message": "' + msg + '"}'
+
+
+
 
 def get_all_users():
     return_value = jsonify({'users': User.get_all_users()})
