@@ -22,7 +22,7 @@
 
        - name: Install Review Copilot
          run: |
-           uv tool install "git+https://${{ secrets.REVIEW_COPILOT_KEY }}@github.com/scs-sandbox/review-copilot.gitsubdirectory=packages/review-copilot-cli"
+           uv tool install "git+https://${{ secrets.REVIEW_COPILOT_KEY }}@github.com/scs-sandbox/review-copilot.git#subdirectory=packages/review-copilot-cli"
 
        - name: Run Review Copilot
          env:
