@@ -9,7 +9,7 @@ from models.user_model import User
 from app import vuln
 
 
-def error_message_helper(msg):
+def error_message_helper():
     return '{ "status": "fail", "message": "' + msg + '"}'
 
 def error_message_helper1(msg):
