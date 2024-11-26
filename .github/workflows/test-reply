@@ -1,0 +1,43 @@
+name: Reply to Review Comments
+
+on:
+  pull_request_review_comment:
+    types: [created]
+
+jobs:
+  reply-to-comments:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Install Review Copilot
+        run: |
+          uv tool install "git+https://${{ secrets.REVIEW_COPILOT_KEY }}@github.com/scs-sandbox/review-copilot.git#subdirectory=packages/review-copilot-cli"
+
+      - name: Run Reply to Comment
+        env:
+          PYTHONUNBUFFERED: 1
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.REVIEW_COPILOT_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.REVIEW_COPILOT_SECRET_ACCESS_KEY }}
+          BEDROCK_KNOWLEDGE_BASE_ID: ${{ secrets.REVIEW_COPILOT_BEDROCK_KNOWLEDGE_BASE_ID }}
+          BEDROCK_DATASOURCE_ID: ${{ secrets.REVIEW_COPILOT_BEDROCK_DATASOURCE_ID }}
+          LANGCHAIN_API_KEY: ${{ secrets.REVIEW_COPILOT_LANGSMITH_API_KEY }}
+        run: |
+          review-copilot reply \
+            --repo $GITHUB_REPOSITORY \
+            --comment-id ${{ github.event.comment.id }} \
+            --pull-number ${{ github.event.pull_request.number }} \
+            --token $GITHUB_TOKEN \
+            --follow-up-comment "${{ github.event.comment.body }}" \
+            --in-reply-to-id ${{ github.event.comment.in_reply_to_id }}
