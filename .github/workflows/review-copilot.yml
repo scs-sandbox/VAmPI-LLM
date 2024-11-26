@@ -1,39 +1,39 @@
-name: Review Co-Pilot
-
-on:
-  pull_request:
-    types: [reopened, opened, synchronize]
-
-jobs:
-  review-copilot:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.x"
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@v3
-
-      - name: Install Review Copilot
-        run: |
-          uv tool install "git+https://${{ secrets.REVIEW_COPILOT_KEY }}@github.com/scs-sandbox/review-copilot.git#subdirectory=packages/review-copilot-cli"
-
-      - name: Run Review Copilot
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.REVIEW_COPILOT_ACCESS_KEY }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.REVIEW_COPILOT_SECRET_ACCESS_KEY }}
-          BEDROCK_KNOWLEDGE_BASE_ID: ${{ secrets.REVIEW_COPILOT_BEDROCK_KNOWLEDGE_BASE_ID }}
-          LANGCHAIN_API_KEY: ${{ secrets.REVIEW_COPILOT_LANGSMITH_API_KEY }}
-
-        run: |
-          REPO_NAME="${{ github.repository }}"
-          PR_NUMBER="${{ github.event.pull_request.number }}"
-
-          review-copilot review $REPO_NAME $PR_NUMBER
+# name: Review Co-Pilot
+#
+# on:
+#   pull_request:
+#     types: [reopened, opened, synchronize]
+#
+# jobs:
+#   review-copilot:
+#     runs-on: ubuntu-latest
+#
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v3
+#
+#       - name: Set up Python
+#         uses: actions/setup-python@v4
+#         with:
+#           python-version: "3.x"
+#
+#       - name: Install uv
+#         uses: astral-sh/setup-uv@v3
+#
+#       - name: Install Review Copilot
+#         run: |
+#           uv tool install "git+https://${{ secrets.REVIEW_COPILOT_KEY }}@github.com/scs-sandbox/review-copilot.git#subdirectory=packages/review-copilot-cli"
+#
+#       - name: Run Review Copilot
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#           AWS_ACCESS_KEY_ID: ${{ secrets.REVIEW_COPILOT_ACCESS_KEY }}
+#           AWS_SECRET_ACCESS_KEY: ${{ secrets.REVIEW_COPILOT_SECRET_ACCESS_KEY }}
+#           BEDROCK_KNOWLEDGE_BASE_ID: ${{ secrets.REVIEW_COPILOT_BEDROCK_KNOWLEDGE_BASE_ID }}
+#           LANGCHAIN_API_KEY: ${{ secrets.REVIEW_COPILOT_LANGSMITH_API_KEY }}
+#
+#         run: |
+#           REPO_NAME="${{ github.repository }}"
+#           PR_NUMBER="${{ github.event.pull_request.number }}"
+#
+#           review-copilot review $REPO_NAME $PR_NUMBER
