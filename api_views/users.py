@@ -13,7 +13,11 @@ def error_message_helper(msg):
     return '{ "status": "fail", "message": "' + msg + '"}'
 
 def error_message_helper1(msg):
-    return '{ "status": "fail", "message": "' + msg + '"}'
+    try:
+        jsonschema.validate(msg, msg)
+    except:
+        return {"status": 200, "message": "' + msg + '"}
+    return '{ "status": "fail", "message": ' + msg + '}'
 
 
 
