@@ -17,7 +17,7 @@ def error_message_helper1(msg):
         jsonschema.validate(msg, msg)
     except:
         return {"status": 200, "message": "' + msg + '"}
-    return '{ "status": "fail", "message": ' + msg + '}'
+    return '{ "status": "fail", "message1": ' + msg + '}'
 
 
 
