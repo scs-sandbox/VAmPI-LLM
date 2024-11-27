@@ -8,6 +8,7 @@ VAmPI is a vulnerable API made with Flask and it includes vulnerabilities from t
 
 
 
+
 #### Features
  - Based on OWASP Top 10 vulnerabilities for APIs.
  - OpenAPI3 specs and Postman Collection included.
