@@ -26,7 +26,7 @@ def fetch_data(api_url):
           - 'data': The response text if successful, or an error message if an error occurs.
     """
     try:
-        response = requests.get(api_url, timeout=500)
+        response = requests.get(api_url, timeout=30)
         response.raise_for_status()  # Raises an HTTPError for bad responses (4xx or 5xx)
         return {'status': 'success', 'data': response.text}
     except requests.exceptions.HTTPError as http_err:
