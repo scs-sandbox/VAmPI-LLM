@@ -15,3 +15,5 @@ ENV tokentimetolive=60
 
 ENTRYPOINT ["python"]
 CMD ["app.py"]
+
+# Some random thing
