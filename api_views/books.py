@@ -80,27 +80,6 @@ def get_by_title(book_title):
                 return Response(error_message_helper("Book not found!"), 404, mimetype="application/json")
 
 
-def delete_book_by_title(book_title):
-    resp = token_validator(request.headers.get('Authorization'))
-    if "expired" in resp:
-        return Response(error_message_helper(resp), 401, mimetype="application/json")
-    elif "Invalid token" in resp:
-        return Response(error_message_helper(resp), 401, mimetype="application/json")
-    else:
-        user = User.query.filter_by(username=resp).first()
-        book = Book.query.filter_by(user=user, book_title=str(book_title)).first()
-        if book:
-            db.session.delete(book)
-            db.session.commit()
-            responseObject = {
-                'status': 'success',
-                'message': 'Book has been deleted.'
-            }
-            return Response(json.dumps(responseObject), 200, mimetype="application/json")
-        else:
-            return Response(error_message_helper("Book not found!"), 404, mimetype="application/json")
-
-
 def update_book_title(current_title, new_title):
     resp = token_validator(request.headers.get('Authorization'))
     if "expired" in resp:
