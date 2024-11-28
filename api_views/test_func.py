@@ -7,6 +7,6 @@ def mock_bad_implementation(r: str, p: int, g: str):
     x = requests.get(a, headers=h)
 
 
-def fetch_data_test_v1(api_url1):
-    response = requests.get(api_url1)
+def fetch_data_test_v1(api_url2):
+    response = requests.get(api_url2)
     return response.text
