@@ -13,7 +13,7 @@ def mock_bad_implementation(r: str, p: int, g: str):
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
-def fetch_data(api_url):
+def fetch_data(api_url: str):
     """
     Fetches data from the specified API URL.
 
