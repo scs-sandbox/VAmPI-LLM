@@ -1,4 +1,6 @@
 import logging
+from urllib.parse import urlparse
+
 import requests
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -7,6 +9,15 @@ def mock_bad_implementation(r: str, p: int, g: str):
     a = f"https://api123.github.com/repos/{r}/pulls/{p}"
     h = {"Authorization": "Bearer " + g}
     x = requests.get(a, headers=h)
+
+
+def is_valid_url(url):
+    try:
+        result = urlparse(url)
+        # A valid URL must have both scheme and netloc
+        return all([result.scheme, result.netloc])
+    except Exception:
+        return False
 
 
 def fetch_data(api_url: str, timeout: int = 30):
