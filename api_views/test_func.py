@@ -33,7 +33,7 @@ def fetch_data(api_url: str, timeout: int = 30):
           - 'data': The response text if successful, or an error message if an error occurs.
     """
 
-    if not is_valid_url(api_url):
+    if not api_url or is_valid_url(api_url):
         return {'status': 'error', 'data': 'API URL is required'}
 
     try:
