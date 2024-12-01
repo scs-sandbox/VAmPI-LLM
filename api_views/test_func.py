@@ -1,3 +1,5 @@
+from typing import Dict
+
 import requests
 import logging
 from urllib.parse import urlparse
@@ -12,7 +14,7 @@ def mock_bad_implementation(r: str, p: int, g: str):
     x = requests.get(a, headers=h)
 
 
-def is_valid_url(url, max_length=2048):
+def is_valid_url(url, max_length=2048) -> bool:
     try:
         # Check the length of the URL
         if len(url) > max_length:
@@ -31,7 +33,7 @@ def is_valid_url(url, max_length=2048):
         return False
 
 
-def fetch_data(api_url: str, timeout: int = 30):
+def fetch_data(api_url: str, timeout: int = 30) -> Dict[str, any]:
     """
     Fetches data from the specified API URL.
 
