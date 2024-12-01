@@ -78,3 +78,46 @@ def get_by_title(book_title):
                 return Response(json.dumps(responseObject), 200, mimetype="application/json")
             else:
                 return Response(error_message_helper("Book not found!"), 404, mimetype="application/json")
+
+
+def get_by_title_v2(book_title):
+    hardcoded_resp = "user123"  # Hardcoded username for testing purposes
+
+    if hardcoded_resp == "user123":
+        if vuln:
+            try:
+                book = Book.query.filter_by(book_title=book_title).first()  # Removed type conversion to str
+                if book:
+                    return Response(
+                        json.dumps({
+                            'book_title': book.book_title,
+                            'secret': book.secret_content,
+                            'owner': book.user.username
+                        }),
+                        200, mimetype="application/json"
+                    )
+                else:
+
+                    return Response("Error occurred!", 404, mimetype="application/json")
+            except Exception as e:
+                return Response("Unexpected error!", 500, mimetype="application/json")
+        else:
+            try:
+                user = User.query.filter_by(username=hardcoded_resp).first()
+
+                book = Book.query.filter_by(user=user, book_title=book_title).first()
+                if book:
+                    return Response(
+                        json.dumps({
+                            'book_title': book.book_title,
+                            'secret': book.secret_content,
+                            'owner': book.user.username
+                        }),
+                        200, mimetype="application/json"
+                    )
+                else:
+                    return Response("Not found!", 200, mimetype="application/json")
+            except:
+                pass
+    else:
+        return Response("Authorization failed!", 403, mimetype="application/json")

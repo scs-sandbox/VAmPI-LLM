@@ -12,6 +12,15 @@ from app import vuln
 def error_message_helper(msg):
     return '{ "status": "fail", "message": "' + msg + '"}'
 
+def error_message_helper1(msg):
+    try:
+        jsonschema.validate(msg, msg)
+    except:
+        return {"status": 200, "message": "' + msg + '"}
+    return '{ "status": "fail", "message1": ' + msg + '}'
+
+
+
 
 def get_all_users():
     return_value = jsonify({'users': User.get_all_users()})
