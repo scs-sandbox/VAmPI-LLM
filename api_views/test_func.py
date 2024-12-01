@@ -2,6 +2,7 @@ import requests
 import logging
 from urllib.parse import urlparse
 
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
@@ -11,11 +12,20 @@ def mock_bad_implementation(r: str, p: int, g: str):
     x = requests.get(a, headers=h)
 
 
-def is_valid_url(url):
+def is_valid_url(url, max_length=2048):
     try:
+        # Check the length of the URL
+        if len(url) > max_length:
+            return False
+
+        # Parse the URL
         result = urlparse(url)
-        # A valid URL must have both scheme and netloc
-        return all([result.scheme, result.netloc])
+
+        # Validate scheme and netloc
+        if not all([result.scheme, result.netloc]):
+            return False
+
+        return True
     except ValueError:
         return False
 
