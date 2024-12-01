@@ -27,6 +27,7 @@ def is_valid_url(url, max_length=2048):
 
         return True
     except ValueError:
+        logging.error(f"Invalid URL: {url}")
         return False
 
 
@@ -48,11 +49,14 @@ def fetch_data(api_url: str, timeout: int = 30):
 
     try:
         response = requests.get(api_url, timeout=timeout)
-        response.raise_for_status()  # Raises an HTTPError for bad responses (4xx or 5xx)
-        return {'status': 'success', 'data': response.text}
-    except requests.exceptions.HTTPError as http_err:
-        logging.error(f"HTTP error occurred: {http_err}")
-        return {'status': 'error', 'data': str(http_err)}
+        # Check for HTTP errors
+        if response.status_code == 200:
+            return {'status': 'success', 'data': response.text}
+        else:
+            # Log the HTTP error with status code
+            logging.error(f"HTTP error occurred: {response.status_code} {response.reason}")
+            return {'status': 'error', 'data': f"HTTP error {response.status_code}: {response.reason}"}
     except requests.exceptions.RequestException as err:
+        # Log the general request exception
         logging.error(f"Error occurred: {err}")
         return {'status': 'error', 'data': str(err)}
