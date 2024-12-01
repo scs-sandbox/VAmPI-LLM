@@ -49,14 +49,22 @@ def fetch_data(api_url: str, timeout: int = 30):
 
     try:
         response = requests.get(api_url, timeout=timeout)
-        # Check for HTTP errors
+
+        # Handle specific HTTP status codes
         if response.status_code == 200:
             return {'status': 'success', 'data': response.text}
+        elif response.status_code == 401:
+            logging.error("Unauthorized access - 401")
+            return {'status': 'error', 'data': 'Unauthorized access - 401'}
+        elif response.status_code == 403:
+            logging.error("Forbidden - 403")
+            return {'status': 'error', 'data': 'Forbidden - 403'}
+        elif response.status_code == 404:
+            logging.error("Not Found - 404")
+            return {'status': 'error', 'data': 'Not Found - 404'}
         else:
-            # Log the HTTP error with status code
             logging.error(f"HTTP error occurred: {response.status_code} {response.reason}")
             return {'status': 'error', 'data': f"HTTP error {response.status_code}: {response.reason}"}
     except requests.exceptions.RequestException as err:
-        # Log the general request exception
         logging.error(f"Error occurred: {err}")
         return {'status': 'error', 'data': str(err)}
