@@ -16,7 +16,7 @@ def is_valid_url(url):
         result = urlparse(url)
         # A valid URL must have both scheme and netloc
         return all([result.scheme, result.netloc])
-    except Exception:
+    except ValueError:
         return False
 
 
@@ -33,7 +33,7 @@ def fetch_data(api_url: str, timeout: int = 30):
           - 'data': The response text if successful, or an error message if an error occurs.
     """
 
-    if not api_url:
+    if not is_valid_url(api_url):
         return {'status': 'error', 'data': 'API URL is required'}
 
     try:
