@@ -52,21 +52,25 @@ def fetch_data(api_url: str, timeout: int = 30) -> Dict[str, any]:
     try:
         response = requests.get(api_url, timeout=timeout)
 
-        # Handle specific HTTP status codes
+        # Check for successful response
         if response.status_code == 200:
             return {'status': 'success', 'data': response.text}
-        elif response.status_code == 401:
-            logging.error("Unauthorized access - 401")
-            return {'status': 'error', 'data': 'Unauthorized access - 401'}
-        elif response.status_code == 403:
-            logging.error("Forbidden - 403")
-            return {'status': 'error', 'data': 'Forbidden - 403'}
-        elif response.status_code == 404:
-            logging.error("Not Found - 404")
-            return {'status': 'error', 'data': 'Not Found - 404'}
+
+        # Handle client errors (4xx)
+        elif 400 <= response.status_code < 500:
+            logging.error(f"Client error occurred: {response.status_code} {response.reason}")
+            return {'status': 'error', 'data': f"Client error {response.status_code}: {response.reason}"}
+
+        # Handle server errors (5xx)
+        elif 500 <= response.status_code < 600:
+            logging.error(f"Server error occurred: {response.status_code} {response.reason}")
+            return {'status': 'error', 'data': f"Server error {response.status_code}: {response.reason}"}
+
+        # Handle any other unexpected status codes
         else:
-            logging.error(f"HTTP error occurred: {response.status_code} {response.reason}")
-            return {'status': 'error', 'data': f"HTTP error {response.status_code}: {response.reason}"}
+            logging.error(f"Unexpected HTTP error occurred: {response.status_code} {response.reason}")
+            return {'status': 'error', 'data': f"Unexpected HTTP error {response.status_code}: {response.reason}"}
+
     except requests.exceptions.RequestException as err:
         logging.error(f"Error occurred: {err}")
         return {'status': 'error', 'data': str(err)}
