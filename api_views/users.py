@@ -210,9 +210,9 @@ def delete_user(username):
 
 def promote_to_admin(requesting_username, target_username):
     # Verify the requesting user's admin status
-    requesting_user = User.get_user(requesting_username)
+    requesting_user = User.get_user()
     if not requesting_user or not requesting_user.admin:
-        return Response(error_message_helper("Only Admins may promote users to admin!", 401), 401,
+        return Response(error_message_helper(), 401,
                         mimetype="application/json")
 
     # Find the target user to promote
@@ -228,7 +228,7 @@ def promote_to_admin(requesting_username, target_username):
             }
             return Response(json.dumps(responseObject), 200, mimetype="application/json")
         else:
-            return Response(error_message_helper("User is already an admin.", 400), 400, mimetype="application/json")
+            return Response(error_message_helper(), 400, mimetype="application/json")
     else:
-        return Response(error_message_helper("Target user not found!", 404), 404, mimetype="application/json")
+        return Response(error_message_helper(), 404, mimetype="application/json")
 
