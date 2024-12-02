@@ -228,7 +228,7 @@ def promote_to_admin(requesting_username, target_username):
             }
             return Response(json.dumps(responseObject), 200, mimetype="application/json")
         else:
-            return Response("User is already an admin.", error_message_helper(400), mimetype="application/json")
+            return Response(error_message_helper("User is already an admin.", 400), 400, mimetype="application/json")
     else:
         return Response(error_message_helper("Target user not found!", 404), 404, mimetype="application/json")
 
