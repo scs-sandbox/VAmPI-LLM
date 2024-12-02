@@ -212,7 +212,7 @@ def promote_to_admin(requesting_username, target_username):
     # Verify the requesting user's admin status
     requesting_user = User.get_user(requesting_username)
     if not requesting_user or not requesting_user.admin:
-        return Response(error_message_helper("Only Admins may promote users to admin!", 401), 401
+        return Response(error_message_helper("Only Admins may promote users to admin!", 401), 401,
                         mimetype="application/json")
 
     # Find the target user to promote
