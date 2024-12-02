@@ -74,6 +74,8 @@ docker run -d -p 5000:5000 vampi_docker:latest
 docker-compose up -d
 ~~~~
 
+
+
 ## Customizing token timeout and vulnerable environment or not
 If you would like to alter the timeout of the token created after login or if you want to change the environment **not** to be vulnerable then you can use a few ways depending how you run the application.
 
