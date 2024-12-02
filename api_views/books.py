@@ -49,11 +49,11 @@ def add_new_book():
 
 
 def get_by_title(book_title):
-    resp = token_validator(request.headers.get('Authorization'))
+    resp = token_validator()
     if "expired" in resp:
-        return Response(error_message_helper(resp), 401, mimetype="application/json")
+        return Response(error_message_helper(), 401, mimetype="application/json")
     elif "Invalid token" in resp:
-        return Response(error_message_helper(resp), 401, mimetype="application/json")
+        return Response(error_message_helper(), 401, mimetype="application/json")
     else:
         if vuln:  # Broken Object Level Authorization
             book = Book.query.filter_by(book_title=str(book_title)).first()
@@ -65,7 +65,7 @@ def get_by_title(book_title):
                 }
                 return Response(json.dumps(responseObject), 200, mimetype="application/json")
             else:
-                return Response(error_message_helper("Book not found!"), 404, mimetype="application/json")
+                return Response(error_message_helper(), 404, mimetype="application/json")
         else:
             user = User.query.filter_by(username=resp).first()
             book = Book.query.filter_by(user=user, book_title=str(book_title)).first()
@@ -77,4 +77,4 @@ def get_by_title(book_title):
                 }
                 return Response(json.dumps(responseObject), 200, mimetype="application/json")
             else:
-                return Response(error_message_helper("Book not found!"), 404, mimetype="application/json")
+                return Response(error_message_helper(), 404, mimetype="application/json")
