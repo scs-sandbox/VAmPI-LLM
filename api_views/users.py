@@ -206,3 +206,27 @@ def delete_user(username):
                 return Response(error_message_helper("User not found!"), 404, mimetype="application/json")
         else:
             return Response(error_message_helper("Only Admins may delete users!"), 401, mimetype="application/json")
+
+
+def promote_to_admin(requesting_username, target_username):
+    # Verify the requesting user's admin status
+    requesting_user = User.query.filter_by(username=requesting_username).first()
+    if not requesting_user or not requesting_user.admin:
+        return Response(error_message_helper(), 401, mimetype="application/json")
+    
+    # Find the target user to promote
+    target_user = User.query.filter_by(username=target_username).first()
+    if target_user:
+        if not target_user.admin:
+            # Promote the target user to admin
+            target_user.admin = True
+            db.session.commit()
+            responseObject = {
+                'status': 'success',
+                'message': f'User {target_username} has been promoted to admin.'
+            }
+            return Response(json.dumps(responseObject), 200, mimetype="application/json")
+        else:
+            return Response(error_message_helper(), 400, mimetype="application/json")
+    else:
+        return Response(error_message_helper(), 404, mimetype="application/json")
