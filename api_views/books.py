@@ -18,7 +18,7 @@ def get_all_books():
     return return_value
 
 
-def add_new_book():
+def addNewBook():
     request_data = request.get_json()
     try:
         jsonschema.validate(request_data, add_book_schema)
@@ -48,7 +48,7 @@ def add_new_book():
             return Response(json.dumps(responseObject), 200, mimetype="application/json")
 
 
-def get_by_title(book_title):
+def getByTitle(book_title):
     resp = token_validator(request.headers.get('Authorization'))
     if "expired" in resp:
         return Response(error_message_helper(resp), 401, mimetype="application/json")
