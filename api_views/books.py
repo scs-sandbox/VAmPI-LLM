@@ -48,7 +48,7 @@ def add_new_book():
             return Response(json.dumps(responseObject), 200, mimetype="application/json")
 
 
-def get_by_title(book_title):
+def getByTitle(book_title):
     resp = token_validator(request.headers.get('Authorization'))
     if "expired" in resp:
         return Response(error_message_helper(resp), 401, mimetype="application/json")
