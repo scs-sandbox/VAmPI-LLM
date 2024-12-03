@@ -206,3 +206,65 @@ def delete_user(username):
                 return Response(error_message_helper("User not found!"), 404, mimetype="application/json")
         else:
             return Response(error_message_helper("Only Admins may delete users!"), 401, mimetype="application/json")
+
+
+def get_user_by_email(email):
+    """
+    Retrieve user details by email address.
+    """
+    user = User.query.filter_by(email=email).first()
+    if user:
+        return jsonify(user.json()), 200
+    else:
+        return Response(error_message_helper(), 404, mimetype="application/json")
+
+
+def promote_user_to_admin(username):
+    """
+    Promote a user to admin status. Only accessible by current admins.
+    """
+    resp = token_validator(request.headers.get('Authorization'))
+    if "expired" in resp or "Invalid token" in resp:
+        return Response(error_message_helper(resp), 401, mimetype="application/json")
+
+    current_user = User.query.filter_by(username=resp).first()
+    if not current_user.admin:
+        return Response(error_message_helper("Only Admins may promote users!"), 401, mimetype="application/json")
+
+    user = User.query.filter_by(username=username).first()
+    if user:
+        user.admin = True
+        db.session.commit()
+        responseObject = {
+            'status': 'success',
+            'message': 'User promoted to admin.'
+        }
+        return Response(json.dumps(responseObject), 200, mimetype="application/json")
+    else:
+        return Response(error_message_helper("User not found!"), 404, mimetype="application/json")
+
+
+def deactivate_user_account(username):
+    """
+    Deactivate a user account. Only accessible by current admins.
+    """
+    resp = token_validator(request.headers.get('Authorization'))
+    if "expired" in resp or "Invalid token" in resp:
+        return Response(error_message_helper(resp), 401, mimetype="application/json")
+
+    current_user = User.query.filter_by(username=resp).first()
+    if not current_user.admin:
+        return Response(error_message_helper("Only Admins may deactivate user accounts!"), 401, mimetype="application/json")
+
+    user = User.query.filter_by(username=username).first()
+    if user:
+        user.active = False  # Assuming 'active' is a column to manage account status
+        db.session.commit()
+        responseObject = {
+            'status': 'success',
+            'message': 'User account deactivated.'
+        }
+        return Response(json.dumps(responseObject), 200, mimetype="application/json")
+    else:
+        return Response(error_message_helper("User not found!"), 404, mimetype="application/json")
+        
