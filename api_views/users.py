@@ -216,7 +216,7 @@ def get_user_by_email(email):
     if user:
         return jsonify(user.json()), 200
     else:
-        return Response(error_message_helper("User not found"), 404, mimetype="application/json")
+        return Response(error_message_helper(), 404, mimetype="application/json")
 
 
 def promote_user_to_admin(username):
