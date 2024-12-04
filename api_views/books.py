@@ -32,20 +32,27 @@ def add_new_book():
     else:
         user = User.query.filter_by(username=resp).first()
 
-        # check if user already has this book title
-        book = Book.query.filter_by(user=user, book_title=request_data.get('book_title')).first()
-        if book:
-            return Response(error_message_helper("Book Already exists!"), 400, mimetype="application/json")
-        else:
-            newBook = Book(book_title=request_data.get('book_title'), secret_content=request_data.get('secret'),
-                           user_id=user.id)
-            db.session.add(newBook)
-            db.session.commit()
-            responseObject = {
-                'status': 'success',
-                'message': 'Book has been added.'
-            }
-            return Response(json.dumps(responseObject), 200, mimetype="application/json")
+    # Check if user already has a book with the same title
+    book = Book.query.filter_by(user=user, book_title=request_data.get('book_title')).first()
+    if book:
+        return Response(error_message_helper("Book already exists!"), 409, mimetype="application/json")
+
+    # Set default secret content if not provided
+    secret_content = request_data.get('secret', "No secret content available")
+
+    new_book = Book(
+        book_title=request_data.get('book_title'),
+        secret_content=secret_content,
+        user_id=user.id
+    )
+    db.session.add(new_book)
+    db.session.commit()
+
+    responseObject = {
+        'status': 'success',
+        'message': 'Book has been added.'
+    }
+    return Response(json.dumps(responseObject), 201, mimetype="application/json")
 
 
 def get_by_title(book_title):

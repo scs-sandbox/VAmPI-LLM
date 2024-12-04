@@ -206,3 +206,49 @@ def delete_user(username):
                 return Response(error_message_helper("User not found!"), 404, mimetype="application/json")
         else:
             return Response(error_message_helper("Only Admins may delete users!"), 401, mimetype="application/json")
+
+
+def get_user_by_email(email):
+    user = User.query.filter_by(email=email).first()
+    if user:
+        return jsonify(user.json()), 200
+    else:
+        return Response(error_message_helper(), 404, mimetype="application/json")
+
+
+def update_last_login(username):
+    user = User.query.filter_by(username=username).first()
+    if user:
+        user.update_last_login()
+        responseObject = {
+                    'status': 'success',
+                    'message': 'Last login updated.'
+                }
+        return Response(json.dumps(responseObject), 200, mimetype="application/json")
+    else:
+        return Response(error_message_helper("User not found"), 404, mimetype="application/json")
+
+
+def change_admin_status(username, new_status):
+    resp = token_validator(request.headers.get('Authorization'))
+    if "expired" in resp:
+        return Response(error_message_helper(resp), 401, mimetype="application/json")
+    elif "Invalid token" in resp:
+        return Response(error_message_helper(resp), 401, mimetype="application/json")
+    else:
+        requesting_user = User.query.filter_by(username=resp).first()
+        if requesting_user.admin:
+            user = User.query.filter_by(username=username).first()
+            if user:
+                user.admin = new_status
+                db.session.commit()
+                responseObject = {
+                    'status': 'success',
+                    'message': f'Admin status changed to {new_status}.'
+                }
+                return Response(json.dumps(responseObject), 200, mimetype="application/json")
+            else:
+                return Response(error_message_helper("User not found"), 404, mimetype="application/json")
+        else:
+            return Response(error_message_helper("Only Admins may change admin status!"), 401, mimetype="application/json")
+

@@ -14,6 +14,7 @@ class User(db.Model):
     password = db.Column(db.String(128), nullable=False)
     email = db.Column(db.String(128), nullable=False)
     admin = db.Column(db.Boolean, nullable=False, default=False)
+    last_login = db.Column(db.DateTime, nullable=True)
 
     books = relationship("Book", order_by=Book.id, back_populates="user")
 
@@ -92,6 +93,10 @@ class User(db.Model):
         done = User.query.filter_by(username=username).delete()
         db.session.commit()
         return done
+
+    def update_last_login(self):
+        self.last_login = datetime.datetime.utcnow()
+        db.session.commit()
 
     @staticmethod
     def init_db_users():
