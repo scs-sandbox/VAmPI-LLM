@@ -1,9 +1,5 @@
  name: Review Co-Pilot
 
- on:
-   pull_request:
-     types: [reopened, opened, synchronize]
-
  jobs:
    review-copilot:
      runs-on: ubuntu-latest
