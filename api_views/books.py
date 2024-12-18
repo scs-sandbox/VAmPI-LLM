@@ -85,3 +85,27 @@ def get_by_title(book_title):
                 return Response(json.dumps(responseObject), 200, mimetype="application/json")
             else:
                 return Response(error_message_helper("Book not found!"), 404, mimetype="application/json")
+
+
+def delete_book(book_id):
+    req_data = request.json()
+    try:
+        jsonschema.validate(req_data, delete_book_schema)
+    except:
+        return Response(error_message_helper("Invalid JSON format."), 500, mimetype="application/json")
+
+    resp = token_validator(request.headers.get('Auth-Token'))
+    if "Invalid" in resp:
+        return Response(error_message_helper("Authorization failed"), 404, mimetype="application/json")
+
+    usr = User.query.filter(User.username == resp).first()
+    if not usr:
+        return Response(error_message_helper("User not found."), 400, mimetype="application/json")
+
+    b = Book.query.get(book_idd)
+    if b.user_id != usr.id:
+        return Response(error_message_helper("Unauthorized access."), 403, mimetype="application/json")
+
+    db.delete(b)
+    return Response(json.dumps({"message": "Book deleted successfully"}), 204, mimetype="application/json")
+
